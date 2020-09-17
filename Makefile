@@ -41,8 +41,8 @@ install: all
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f ${NAME} ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/${NAME}
-	@echo don\'t forget to add start command to .xinitrc:
-	@echo dwmstatus 2>&1 >/dev/null &
+	@echo don\'t forget to add start command to .xinitrc: 
+	@echo "dwmstatus 2>&1 >/dev/null &"
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
