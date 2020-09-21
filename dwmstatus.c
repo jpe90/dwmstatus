@@ -80,17 +80,6 @@ setstatus(char *str)
 }
 
 char *
-loadavg(void)
-{
-	double avgs[3];
-
-	if (getloadavg(avgs, 3) < 0)
-		return smprintf("");
-
-	return smprintf("%.2f %.2f %.2f", avgs[0], avgs[1], avgs[2]);
-}
-
-char *
 readfile(char *base, char *file)
 {
 	char *path, line[513];
@@ -177,11 +166,9 @@ int
 main(void)
 {
 	char *status;
-	char *avgs;
 	char *bat;
-	char *bat1;
     char *tmny;
-    char *t0, *t1, *t2;
+    char *t0;
 
 	if (!(dpy = XOpenDisplay(NULL))) {
 		fprintf(stderr, "dwmstatus: cannot open display.\n");
@@ -189,24 +176,14 @@ main(void)
 	}
 
 	for (;;sleep(60)) {
-		avgs = loadavg();
 		bat = getbattery("/sys/class/power_supply/BAT0");
-		bat1 = getbattery("/sys/class/power_supply/BAT1");
-        tmny = mktimes("%a %d %b %H:%M %Z %Y", tznewyork);
+        tmny = mktimes("%a, %b %d %H:%M", tznewyork);
         t0 = gettemperature("/sys/devices/virtual/hwmon/hwmon6", "temp1_input");
-		t1 = gettemperature("/sys/devices/virtual/hwmon/hwmon6", "temp2_input");
-		t2 = gettemperature("/sys/devices/virtual/hwmon/hwmon6", "temp3_input");
-
-                status = smprintf("T:%s|%s|%s L:%s B:%s|%s D:%s", t0,
-                                  t1, t2, avgs, bat, bat1, tmny);
-                setstatus(status);
+        status = smprintf("%s  %s  %s", bat, t0, tmny);
+        setstatus(status);
 
 		free(t0);
-		free(t1);
-		free(t2);
-		free(avgs);
 		free(bat);
-		free(bat1);
         free(tmny);
         free(status);
 	}
